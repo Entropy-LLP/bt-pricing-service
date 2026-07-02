@@ -5,7 +5,7 @@
 
 **Role:** Given load parameters → return a **price with a transparent breakdown** (fuel / driver / per-km / handling), plus a demand-aware dynamic quote where data permits. The CTO cost-engine is the MVP anchor; LinUCB is the dynamic layer.
 
-**Status legend:** ✅ done · 🟡 partial · ⬜ to do · ⛔ stub
+**Status legend:** ✅ done · 🟡 partial · ⬜ to do · ⛔ stub · `(Wx-y)`/`(D-z)` tags = Entropy PMO work-item refs (auto-synced to the tracker — keep them on the line when you flip a checkbox)
 
 ---
 
@@ -16,21 +16,22 @@
 
 ## ✅ Pricing-engine codebase (separate Python — "READY" per blueprint, not yet integrated)
 - ✅ `cto_data.py` — market constants: truck categories **SCV/LCV/MCV/HCV**, mileage by BS norm (Kmpl6/Kmpl4), **Def6** AdBlue %, `vehicle_parc` counts, `service_cost` by age, `oil_cost` (engine+gear), defaults (diesel, driver wage, fixed cost, capacity, handling).
-- ✅ `cto_engine.py` — `breakdown(category, distance, age)` → deterministic operating-cost breakdown.
+- ✅ `cto_engine.py` — `breakdown(category, distance, age)` → deterministic operating-cost breakdown. (D-8)
 - ✅ `rl_agent.py` — **LinUCB** contextual bandit (one ridge model per pricing action); `LinearQAgent` present but **unused**.
 - ✅ `pretrain.py` / `market_sim.py` — synthetic-data training (16-feature market env).
 
 ## ⬜ To do (MVP / P0)
-- ⬜ Stand up the **Python/FastAPI** pricing service (replace the TS placeholder as system of record for quotes).
-- ⬜ Port the **CTO cost-engine** → expose `/quote` returning **fuel / driver / per-km / handling** breakdown (the P0 anchor).
-- ⬜ **Quantity basis by material** — tonnage vs volumetric.
+- ⬜ Stand up the **Python/FastAPI** pricing service (replace the TS placeholder as system of record for quotes). (W4-1)
+- ⬜ Port the **CTO cost-engine** → expose `/quote` returning **fuel / driver / per-km / handling** breakdown (the P0 anchor). (W4-2)
+- ⬜ **Quantity basis by material** — tonnage vs volumetric. (W4-5)
 - ⬜ **Special surcharges** from capacity + "object handling extra cost" keys (freight buffers).
-- ⬜ **Persist quote IDs** so the quoted price is locked at booking (integrate with bt-booking-service).
-- ⬜ **GST + 2% TDS math** (blueprint): GTA rates 5% no-ITC / 12% with-ITC; flag 2% TDS under Sec 194C. New `cto_data` fields: `gta_tax_class`, `tds_deduction_amount_inr`.
-- ⬜ Wire **LinUCB on synthetic data** behind a flag (decoupled from live quotes until Phase-2 data feeds).
+- ⬜ **Persist quote IDs** so the quoted price is locked at booking (integrate with bt-booking-service). (W4-3)
+- ⬜ **GST + 2% TDS math** (blueprint): GTA rates 5% no-ITC / 12% with-ITC; flag 2% TDS under Sec 194C. New `cto_data` fields: `gta_tax_class`, `tds_deduction_amount_inr`. (W4-4)
+- ⬜ Wire **LinUCB on synthetic data** behind a flag (decoupled from live quotes until Phase-2 data feeds). (W4-6)
+- ⬜ Market-context API: lane-asymmetry directionality + ≥1 external freight index (Rivigo NFI / Freight Index One). (W4-8)
 
 ## ⬜ To do (P1 — data-dependent, keep synthetic for now)
-- ⬜ Replace synthetic market signals with real feeds: **weather/monsoon API, harvest calendar, demand–supply, real vehicle_parc, live diesel price** (see PRD Part 7).
+- ⬜ Replace synthetic market signals with real feeds: **weather/monsoon API, harvest calendar, demand–supply, real vehicle_parc, live diesel price** (see PRD Part 7). (W4-7)
 - ⬜ Real road distance + tolls via Google Routes API (currently caller-supplied distance).
 
 ## 🔮 Deferred / out of MVP
